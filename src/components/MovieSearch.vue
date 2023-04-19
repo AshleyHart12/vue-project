@@ -4,7 +4,8 @@ export default {
     return {
       movies: [],
       image: [],
-      query: ''
+      query: '',
+      error: ''
     }
   },
   mounted() {
@@ -15,9 +16,18 @@ export default {
       fetch('http://www.omdbapi.com/?apikey=dc43bd63&t=' + this.query)
         .then(response => response.json())
         .then(data => {
-          this.movies.push(data);
-          this.image = (data.Poster)
-          console.log(this.movies);
+          if(data.Response !== 'False') {
+            this.movies.push(data);
+            this.image = (data.Poster)
+            console.log(this.movies);
+            console.log(data.Response)
+          } else {
+            this.error = 'No Movies Found';
+            console.log('None Found')
+          }
+    
+        }).catch(error => {      
+            console.log(error)
         });
     },
     clearMovies() {
@@ -42,6 +52,7 @@ export default {
         <p>{{ movie.Year }}</p>
         <img :src='image' />
       </ul>
+      <div>{{ error }}</div>
     </div>
   </div>
 </template>
